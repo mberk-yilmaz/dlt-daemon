@@ -17,7 +17,6 @@
 # DLT example implementation
 #
 
-cmake_minimum_required( VERSION 2.6 )
 project( automotive-dlt-example2 )
 
 #
@@ -45,5 +44,5 @@ target_link_libraries(dlt-example2 ${DLT_LIBRARIES})
 set_target_properties(dlt-example2 PROPERTIES LINKER_LANGUAGE C)
 
 install(TARGETS dlt-example2
-	RUNTIME DESTINATION bin
-	COMPONENT base)
+        RUNTIME DESTINATION bin
+        COMPONENT base)

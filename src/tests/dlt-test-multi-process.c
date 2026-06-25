@@ -92,7 +92,7 @@ void quit_handler(int signum);
 void cleanup();
 void do_forks(s_parameters params);
 void run_threads(s_parameters params);
-void do_logging(s_thread_data *data);
+void *do_logging(void *arg);
 int wait_for_death();
 
 /* State information */
@@ -322,8 +322,9 @@ time_t mksleep_time(int delay, int fudge)
 /**
  * Open logging channel and proceed to spam messages
  */
-void do_logging(s_thread_data *data)
+void *do_logging(void *arg)
 {
+    s_thread_data *data = (s_thread_data *)arg;
     DltContext mycontext;
     DltContextData mycontextdata;
     char ctid[5];
@@ -369,7 +370,7 @@ void do_logging(s_thread_data *data)
 
         sleep_time = mksleep_time(data->params.delay, data->params.delay_fudge);
         ts.tv_sec = sleep_time / 1000000000;
-        ts.tv_nsec = sleep_time % 1000000000;
+        ts.tv_nsec = (long int)(sleep_time % 1000000000);
         nanosleep(&ts, NULL);
     }
 
@@ -379,6 +380,7 @@ void do_logging(s_thread_data *data)
     }
 
     dlt_unregister_context(&mycontext);
+    return NULL;
 }
 
 /**
@@ -410,7 +412,7 @@ void run_threads(s_parameters params)
         thread_data[i].params = params;
         thread_data[i].pidcount = pidcount;
 
-        if (pthread_create(&(thread[i]), NULL, (void *)&do_logging, &thread_data[i]) != 0) {
+        if (pthread_create(&(thread[i]), NULL, do_logging, &thread_data[i]) != 0) {
             printf("Error creating thread.\n");
             abort();
         }

@@ -116,7 +116,7 @@ typedef struct {
 /**
  * Print usage information of tool.
  */
-void usage()
+void usage(void)
 {
     char version[255];
 
@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
     }
 
     if (g_dltclient.mode == DLT_CLIENT_MODE_TCP) {
-        g_dltclient.port = dltdata.port;
+        g_dltclient.port = (uint16_t)dltdata.port;
         for (index = optind; index < argc; index++)
             if (dlt_client_set_server_ip(&g_dltclient, argv[index]) == -1) {
                 pr_error("set server ip didn't succeed\n");
@@ -754,8 +754,8 @@ int main(int argc, char *argv[])
         /*dlt_client_main_loop(&dltclient, &dltdata, dltdata.vflag); */
 
         /* Wait timeout */
-        ts.tv_sec = (dltdata.tvalue * NANOSEC_PER_MILLISEC) / NANOSEC_PER_SEC;
-        ts.tv_nsec = (dltdata.tvalue * NANOSEC_PER_MILLISEC) % NANOSEC_PER_SEC;
+        ts.tv_sec = (long int)(dltdata.tvalue * NANOSEC_PER_MILLISEC) / NANOSEC_PER_SEC;
+        ts.tv_nsec = (long int)(dltdata.tvalue * NANOSEC_PER_MILLISEC) % NANOSEC_PER_SEC;
         nanosleep(&ts, NULL);
     } else {
         ret = -1;

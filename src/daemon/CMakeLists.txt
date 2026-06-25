@@ -50,6 +50,9 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux|CYGWIN|MSYS")
     set(RT_LIBRARY rt)
     set(SOCKET_LIBRARY "")
+elseif(APPLE)
+    set(RT_LIBRARY "")
+    set(SOCKET_LIBRARY "")
 else()
     set(RT_LIBRARY "")
     set(SOCKET_LIBRARY socket)
@@ -67,7 +70,7 @@ if (WITH_SYSTEMD_SOCKET_ACTIVATION)
     target_link_libraries(dlt-daemon systemd)
 endif()
 if (WITH_DLT_LOGSTORAGE_GZIP)
-	target_link_libraries(dlt-daemon ${ZLIB_LIBRARY})
+    target_link_libraries(dlt-daemon ${ZLIB_LIBRARY})
 endif()
 
 install(TARGETS dlt-daemon
@@ -87,12 +90,24 @@ if (WITH_DLT_UNIT_TESTS)
 
     add_library(dlt_daemon ${library_SRCS})
     target_link_libraries(dlt_daemon ${RT_LIBRARY} ${SOCKET_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+    if (WITH_DLT_LOGSTORAGE_GZIP)
+	target_link_libraries(dlt_daemon ${ZLIB_LIBRARY})
+    endif()
 
     install(TARGETS dlt_daemon
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/static
             COMPONENT base)
+
+    if(NOT WITH_LIB_NO_VERSION)
+        if(WITH_LIB_SHORT_VERSION)
+            set_target_properties(dlt_daemon PROPERTIES VERSION ${PROJECT_VERSION_MAJOR} SOVERSION ${PROJECT_VERSION_MAJOR})
+        else()
+            set_target_properties(dlt_daemon PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR})
+        endif()
+    endif()
+
 endif(WITH_DLT_UNIT_TESTS)
 
 INSTALL(FILES dlt.conf

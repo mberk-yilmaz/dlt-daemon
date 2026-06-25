@@ -14,9 +14,11 @@
 #######
 
 set(TARGET_LIST dlt-example-user-func)
+set(TARGET_LIST dlt-example-user-func-v2)
 set(TARGET_LIST ${TARGET_LIST} dlt-example-filetransfer)
 if(NOT WITH_DLT_DISABLE_MACRO)
     set(TARGET_LIST ${TARGET_LIST} dlt-example-user)
+    set(TARGET_LIST ${TARGET_LIST} dlt-example-user-v2)
     set(TARGET_LIST ${TARGET_LIST} dlt-example-user-common-api)
 endif()
 
@@ -25,7 +27,7 @@ if(WITH_UDP_CONNECTION)
 endif()
 
 foreach(TARGET IN LISTS TARGET_LIST)
-    set(TARGET_SRCS ${TARGET})
+    set(TARGET_SRCS ${TARGET}.c)
     add_executable(${TARGET} ${TARGET_SRCS})
     target_link_libraries(${TARGET} dlt)
     set_target_properties(${TARGET} PROPERTIES LINKER_LANGUAGE C)

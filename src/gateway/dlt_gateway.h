@@ -112,7 +112,7 @@ DltReceiver *dlt_gateway_get_connection_receiver(DltGateway *g, int fd);
  * @param verbose verbose flag
  * @return 0 on success, -1 otherwise
  */
-int dlt_gateway_process_passive_node_messages(DltDaemon *daemon,
+DltReturnValue dlt_gateway_process_passive_node_messages(DltDaemon *daemon,
                                               DltDaemonLocal *daemon_local,
                                               DltReceiver *recv,
                                               int verbose);
@@ -148,6 +148,24 @@ int dlt_gateway_forward_control_message(DltGateway *g,
                                         int verbose);
 
 /**
+ * DLTv2 Forward control messages to the specified passive node DLT Daemon.
+ *
+ * @param g            DltGateway
+ * @param daemon_local DltDaemonLocal
+ * @param msg          DltMessage version 2
+ * @param eculen       Length of the passive node identifier
+ * @param ecu          Identifier of the passive node
+ * @param verbose      verbose flag
+ * @return 0 on success, -1 otherwise
+ */
+int dlt_gateway_forward_control_message_v2(DltGateway *g,
+                                           DltDaemonLocal *daemon_local,
+                                           DltMessageV2 *msg,
+                                           uint8_t eculen,
+                                           char *ecu,
+                                           int verbose);
+
+/**
  * Process on demand connect/disconnect of passive nodes
  *
  * @param g                 DltGateway
@@ -157,11 +175,11 @@ int dlt_gateway_forward_control_message(DltGateway *g,
  * @param verbose           verbose flag
  * @return 0 on success, -1 otherwise
  */
-int dlt_gateway_process_on_demand_request(DltGateway *g,
-                                          DltDaemonLocal *daemon_local,
-                                          char *node_id,
-                                          int connection_status,
-                                          int verbose);
+DltReturnValue dlt_gateway_process_on_demand_request(DltGateway *g,
+                                                     DltDaemonLocal *daemon_local,
+                                                     char *node_id,
+                                                     int connection_status,
+                                                     int verbose);
 
 /**
  * Send control message to passive node
@@ -178,6 +196,20 @@ int dlt_gateway_send_control_message(DltGatewayConnection *con,
                                      int verbose);
 
 /**
+ * DLTv2 Send control message to passive node for DLT version 2
+ *
+ * @param con           DltGatewayConnection
+ * @param control_msg   DltPassiveControlMessage
+ * @param data          DltMessage
+ * @param verbose       verbose flag
+ * @return 0 on success, -1 otherwise
+ */
+int dlt_gateway_send_control_message_v2(DltGatewayConnection *con,
+                                     DltPassiveControlMessage *control_msg,
+                                     void *data,
+                                     int verbose);
+
+/**
  * Gets the connection handle of passive node with specified ECU
  *
  * @param g             DltGateway
@@ -188,5 +220,17 @@ int dlt_gateway_send_control_message(DltGatewayConnection *con,
 DltGatewayConnection *dlt_gateway_get_connection(DltGateway *g,
                                                  char *ecu,
                                                  int verbose);
+
+/**
+ * DLTv2 Gets the connection handle of passive node with specified ECU
+ *
+ * @param g             DltGateway
+ * @param ecu           Identifier string
+ * @param verbose       verbose flag
+ * @returns Gateway connection handle on success, NULL otherwise
+ */
+DltGatewayConnection *dlt_gateway_get_connection_v2(DltGateway *g,
+                                                    char *ecu,
+                                                    int verbose);
 
 #endif

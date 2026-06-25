@@ -50,7 +50,7 @@
 #define DEFAULT_WAIT_TIMEOUT 1000
 
 DLT_DECLARE_CONTEXT(context_info)
-DLT_DECLARE_CONTEXT(context_log);
+DLT_DECLARE_CONTEXT(context_log)
 DLT_DECLARE_CONTEXT(context_macro_test)
 DltContext context_function_test;
 
@@ -111,7 +111,7 @@ int test_logstorage()
         DLT_LOG_ID(context_log,DLT_LOG_WARN, 1002,
                    DLT_CSTRING("DLT Log Storage Test"), DLT_INT(i));
 
-        usleep(delay);
+        usleep((unsigned int)delay);
     }
 
     printf("Test01: Remove  USB from TARGET\n");
@@ -126,7 +126,7 @@ int test_loglevel(int wait_duration)
 {
     DLT_LOG(context_info, DLT_LOG_INFO, DLT_STRING("Test log level"));
 
-    sleep(wait_duration);
+    sleep((unsigned int)wait_duration);
     return 0;
 }
 
@@ -222,7 +222,7 @@ int test_function_interface(void)
         dlt_user_log_write_finish(&context_data);
     }
     if (dlt_user_log_write_start_id(&(context_function_test),
-                      &context_data, DLT_LOG_INFO,4) > 0)
+                      &context_data, DLT_LOG_INFO, 4) > 0)
     {
         dlt_user_log_write_string(&context_data, "int16");
         dlt_user_log_write_int16(&context_data, INT16_MIN);/*    (-32767-1) */

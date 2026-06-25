@@ -24,11 +24,21 @@ set(TARGET_LIST ${TARGET_LIST} dlt-test-fork-handler)
 set(TARGET_LIST ${TARGET_LIST} dlt-test-init-free)
 set(TARGET_LIST ${TARGET_LIST} dlt-test-preregister-context)
 set(TARGET_LIST ${TARGET_LIST} dlt-test-filetransfer)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-multi-process-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-multi-process-client-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-user-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-client-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-stress-user-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-stress-client-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-stress-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-fork-handler-v2)
+set(TARGET_LIST ${TARGET_LIST} dlt-test-preregister-context-v2)
 install(FILES dlt-test-filetransfer-file dlt-test-filetransfer-image.png
         DESTINATION share/dlt-filetransfer)
 
 if(WITH_DLT_CXX11_EXT)
     set(TARGET_LIST ${TARGET_LIST} dlt-test-cpp-extension)
+    set(TARGET_LIST ${TARGET_LIST} dlt-test-cpp-extension-v2)
 endif()
 
 #TODO: Enable again once dlt-test-non-verbose is adapted to non-macro usage
@@ -39,13 +49,17 @@ endif()
 if(WITH_DLT_QNX_SYSTEM)
     set(TARGET_LIST ${TARGET_LIST} dlt-test-qnx-slogger)
 endif()
- 
-foreach(TARGET IN LISTS TARGET_LIST)
-    set(TARGET_SRCS ${TARGET})
-    add_executable(${TARGET} ${TARGET_SRCS})
-    target_link_libraries(${TARGET} dlt)
-    set_target_properties(${TARGET} PROPERTIES LINKER_LANGUAGE C)
-    install(TARGETS ${TARGET}
+
+foreach(TARGET_NAME IN LISTS TARGET_LIST)
+    if(TARGET_NAME STREQUAL "dlt-test-cpp-extension")
+        set(TARGET_SRCS ${TARGET_NAME}.cpp)
+    else()
+        set(TARGET_SRCS ${TARGET_NAME}.c)
+    endif()
+    add_executable(${TARGET_NAME} ${TARGET_SRCS})
+    target_link_libraries(${TARGET_NAME} dlt)
+    set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE C)
+    install(TARGETS ${TARGET_NAME}
             RUNTIME DESTINATION bin
             COMPONENT base)
 endforeach()

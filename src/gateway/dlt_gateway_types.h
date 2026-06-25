@@ -107,7 +107,7 @@ typedef struct DltPassiveControlMessage {
     uint32_t user_id;
     control_msg_trigger type;   /* on startup or periodic or both */
     control_msg_request req;    /* whether it is requested from gateway or not */
-    int interval;               /* interval for periodic sending. if on startup, -1 */
+    unsigned int interval;               /* interval for periodic sending. if on startup, -1 */
     struct DltPassiveControlMessage *next; /* for multiple passive control message */
 } DltPassiveControlMessage;
 
@@ -116,6 +116,8 @@ typedef struct {
     int handle;                 /* connection handle */
     connection_status status;   /* connected/disconnected */
     char *ecuid;                /* name of passive node */
+    uint8_t ecuid2len;          /* ecu id DLTv2 length */
+    char *ecuid2;               /* ecu id DLTv2 (flexible) */
     char *ip_address;           /* IP address */
     int sock_domain;            /* socket domain */
     int sock_type;              /* socket type */
@@ -125,8 +127,8 @@ typedef struct {
     int timeout;                /* connection timeout */
     int timeout_cnt;            /* connection timeout counter */
     int reconnect_cnt;          /* reconnection counter */
-    int sendtime;               /* periodic sending max time */
-    int sendtime_cnt;           /* periodic sending counter */
+    unsigned int sendtime;               /* periodic sending max time */
+    unsigned int sendtime_cnt;           /* periodic sending counter */
     DltPassiveControlMessage *p_control_msgs; /* passive control msgs */
     DltPassiveControlMessage *head; /* to go back to the head pointer of p_control_msgs */
     int send_serial;            /* Send serial header with control messages */
@@ -140,7 +142,7 @@ typedef struct
     int send_serial;     /* Default: Send serial header with control messages */
     DltGatewayConnection *connections; /* pointer to connections */
     int num_connections; /* number of connections */
-    int interval;        /* interval of retry connection */
+    unsigned int interval;        /* interval of retry connection */
 } DltGateway;
 
 typedef struct {
